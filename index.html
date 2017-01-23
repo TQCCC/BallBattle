@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+        <meta charset="utf-8">
+        <title>BALL BETTLE</title>
+        <style media="screen">
+            body{
+                overflow-y: hidden;
+                overflow-x: hidden;
+                background: url("images/startbg.jpg");
+                background-repeat: no-repeat;
+                background-size:cover;
+            }
+            div#mylegend{
+                cursor: url('cursor.ico'), default;
+            }
+
+            button{
+                cursor: hand;
+                border-style: none;
+                margin: 10px;
+                width: 200px;
+                height: 48px;
+            }
+            button#start1{
+                background: url("images/start1.png");
+            }
+            button#start2{
+                background: url("images/start2.png");
+            }
+            button#exit{
+                background: url("images/exit.png");
+            }
+            button#start1:hover{
+                background: url("images/start1o.png");
+            }
+            button#start2:hover{
+                background: url("images/start2o.png");
+            }
+            button#exit:hover{
+                background: url("images/exito.png");
+            }
+            img#title{
+                margin-top: 40px;
+                margin-bottom: 60px;
+            }
+            img#title2{
+                margin-top: 20px;
+            }
+            img#title3{
+                margin-top: 35px;
+            }
+
+        </style>
+
+    </head>
+    <body bgcolor="#A52A2A" style="margin:0px 0px 0px 0px;" onload="checkGUID();">
+        <audio id="bgm" src="sound/bgm.wav" loop="loop" autoplay="autoplay">
+        </audio>
+        <audio id="gameover" src="sound/gameover.wav">
+        </audio>
+        <audio id="gamewin" src="sound/gamewin.wav">
+        </audio>
+        <div id="mylegend" align="center"></div>
+        <script src="Box2dWeb-2.1.a.3.min.js" charset="utf-8"></script>
+        <script src="lufylegend-1.10.1.min.js" charset="utf-8"></script>
+        <script src="lufylegend.ui-0.14.1.min.js" charset="utf-8"></script>
+
+        <script src="js/AJAX.js" charset="utf-8"></script>
+        <script src="js/Msg/Msg.js" charset="utf-8"></script>
+        <script src="js/Gift.js" charset="utf-8"></script>
+        <script src="js/Bullet.js" charset="utf-8"></script>
+        <script src="js/Ball.js" charset="utf-8"></script>
+
+        <script src="js/Hero.js" charset="utf-8"></script>
+        <script src="js/AIBall1.js" charset="utf-8"></script>
+        <script src="js/AIBall2.js" charset="utf-8"></script>
+
+        <script src="js/Boss/Boss1.js" charset="utf-8"></script>
+        <script src="js/Boss/Boss2.js" charset="utf-8"></script>
+        <script src="js/Boss/Boss3.js" charset="utf-8"></script>
+        <script src="js/Boss/MiddleBoss.js" charset="utf-8"></script>
+
+        <script src="js/LevelControl.js" charset="utf-8"></script>
+        <script src="js/Main.js" charset="utf-8"></script>
+
+        <div id="wrapper" align="center">
+            <img id="title3" src="images/title3.png" alt="title" draggable="false" /><br>
+            <img id="title" src="images/title.png" alt="title" draggable="false" /><br>
+            <button type="button" id="start1" onclick="startGame();"></button><br>
+            <button type="button" id="start2" onclick="startGame2();"></button><br>
+            <img id="title2" src="images/title2.png" alt="title2" draggable="false" /><br>
+            <button type="button" id="exit" onclick="exitGame();"></button>
+        </div>
+
+        <script type="text/javascript">
+            document.getElementById('bgm').volume = 0.3;
+            document.getElementById('gameover').volume = 0.7;
+            var BACK_WIDTH;
+            var BACK_HEIGHT;
+            var STAGE_WIDTH;
+            var STAGE_HEIGHT;
+
+            function startGame() {
+
+                if (GUID!="") {
+                    if (BigLevel == 5) {
+                        sendPlay('CRAZY');
+                    }else{
+                        sendPlay('CLASSIC');
+                    }
+
+                }
+
+                var wrapper = document.getElementById("wrapper");
+                document.body.removeChild(wrapper);
+
+                setTimeout(function () {
+                    BACK_WIDTH = window.innerWidth*1.5;
+                    BACK_HEIGHT = window.innerHeight*1.5;
+
+                    STAGE_WIDTH = window.innerWidth;
+                    STAGE_HEIGHT = window.innerHeight;
+
+                    init(10,"mylegend",STAGE_WIDTH,STAGE_HEIGHT,main,LEvent.INIT);
+                }, 50);
+
+            }
+
+            function startGame2() {
+                BigLevel = 5;
+                startGame();
+            }
+
+            function exitGame() {
+                var gui = require('nw.gui');
+                var app = gui.App;
+                app.quit();
+            }
+
+            var GUID = "";
+            function checkGUID() {
+                var fs = require("fs");
+                var filename = "guid.txt";
+                fs.exists(filename,function (exists) {
+                    if (!exists) {  //if guid.txt does not exist.
+                        GUID = guid();
+                        //create guid.txt
+                        fs.writeFile(filename, GUID, function(err) {
+                        });
+                    }else{
+                        //read guid.txt
+                        fs.readFile(filename, function(err, data) {
+                            GUID = data.toString();
+                        });
+                    }
+                });
+
+            }
+
+            function sendPlay(type) {
+                //send GUID to the server.
+                var xmlhttp = null;
+                if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+                    var xmlhttp=new XMLHttpRequest();
+                }else {// code for IE6, IE5
+                    var xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                xmlhttp.open("GET",HOST_URL+"includes/add_play.php?guid="+GUID+"& type="+type,true);
+                xmlhttp.send();
+            }
+
+            function guid() {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+                    return v.toString(16);
+                });
+            }
+
+        </script>
+
+    </body>
+</html>
