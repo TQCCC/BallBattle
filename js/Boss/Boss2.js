@@ -126,6 +126,7 @@ Boss2.prototype.Die = function () {
     if (this.Name == 'boss2') {
         CurrentLevel = 0;
         BigLevel = 3;
+        hero.hp = HERO_FULL_HP;
     }
     if (messageLayer.childList[3] && messageLayer.childList[3].target.Name == this.Name) {
         messageLayer.childList[3].Die();
