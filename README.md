@@ -4,6 +4,10 @@
 服务端程序PHP实现：
 https://github.com/TQCCC/BallBattle_Server
 
+游戏下载地址：
+download and play!: 
+https://pan.baidu.com/s/1pLumJlp
+
 ![](https://github.com/TQCCC/BallBattle_Server/raw/master/ballbattle_server/images/show4.png)
 ![](https://github.com/TQCCC/BallBattle_Server/raw/master/ballbattle_server/images/show1.png)
 ![](https://github.com/TQCCC/BallBattle_Server/raw/master/ballbattle_server/images/show2.png)
